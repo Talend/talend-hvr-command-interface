@@ -2,8 +2,8 @@
 <launch4jConfig>
     <dontWrapJar>false</dontWrapJar>
     <headerType>console</headerType>
-    <jar>/Users/tbennett/provide/talendcloud-command-interface/target/tcli-1.3.0-jar-with-dependencies.jar</jar>
-    <outfile>~/Downloads/talend-hvr-command-interface/tcli.exe</outfile>
+    <jar>/Users/tbennett/Downloads/talend-hvr-command-interface/target/hvr-tcli-1.0.0-jar-with-dependencies.jar</jar>
+    <outfile>/Users/tbennett/Downloads/talend-hvr-command-interface/tcli.exe</outfile>
     <errTitle></errTitle>
     <cmdLine></cmdLine>
     <chdir>.</chdir>
