@@ -36,10 +36,10 @@ public class tcli {
         mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         String workingDir = new File(".").getAbsolutePath();
-        int last_checkpoint = -1;
+        long last_checkpoint = -1;
         try {
             BufferedReader cprdr = new BufferedReader(new FileReader(new File(workingDir+File.separator+_CHECKPOINTFILE)));
-            last_checkpoint = Integer.parseInt(cprdr.readLine().trim().split(".")[0]);
+            last_checkpoint = Long.parseLong(cprdr.readLine().trim().split("\\.")[0]);
             cprdr.close();
         } catch (IOException e)
         {
@@ -72,18 +72,17 @@ public class tcli {
             Hashtable<String, String> executedJobs = new Hashtable<>();
             ExecutionService executionService = ExecutionService.instance(credentials, TalendCloudRegion.valueOf(Cli.getCliValue("r")));
             for (File file : files) {
-                int hvrManifestCheckPoint = Integer.parseInt(file.getName().split(".")[0]);
+                long hvrManifestCheckPoint = Long.parseLong(file.getName().split("\\.")[0]);
                 while (hvrManifestCheckPoint > last_checkpoint) {
                     HVRManifest hvrManifest = mapper.readValue(file, HVRManifest.class);
                     for (String hvrTable : hvrManifest.getTables()) {
-                        if (talendManifest.getTables().contains(hvrTable)) {
-
+                        if (talendManifest.contains(hvrTable)) {
                             ExecutableService executableService = ExecutableService.instance(credentials, TalendCloudRegion.valueOf(Cli.getCliValue("r")));
                             SearchConditionBuilder fiql = SearchConditionBuilder.instance("fiql");
 
                             String envName = Cli.hasCliValue("e") ? Cli.getCliValue("e") : "default";
-                            String query = fiql.is("name").equalTo(talendManifest.getTables().get(hvrTable)).and().is("workspace.environment.name").equalTo(envName).query();
-
+                            Mapping mapping = talendManifest.getMapping(hvrTable);
+                            String query = fiql.is("name").equalTo(mapping.getTalendJob()).and().is("workspace.environment.name").equalTo(envName).query();
                             Executable[] executables = executableService.getByQuery(query);
 
                             if (executables.length > 1)
@@ -94,12 +93,15 @@ public class tcli {
 
                             ExecutionRequest executionRequest = new ExecutionRequest();
                             executionRequest.setExecutable(executables[0].getExecutable());
-                            if (Cli.hasCliValue("cv")) {
+                            if (mapping.getParameters().size() > 0) {
                                 String[] pairs = Cli.getCliValue("cv").split(";");
                                 parameters = new Hashtable<>();
-                                for (String pair : pairs) {
-                                    String[] nv = pair.split("=");
-                                    parameters.put(nv[0], nv[1]);
+                                for (Parameter parameter : mapping.getParameters()) {
+                                    Hashtable<String, String> contextVariables = parameter.getContextVariables();
+                                    for (String key : contextVariables.keySet())
+                                    {
+                                        parameters.put(key, contextVariables.get(key));
+                                    }
                                 }
 
                                 executionRequest.setParameters(parameters);
@@ -107,7 +109,7 @@ public class tcli {
 
                             ExecutionResponse executionResponse = executionService.post(executionRequest);
                             printMessage("Talend Job Started: " + executionResponse.getExecutionId());
-                            executedJobs.put(executionResponse.getExecutionId(), null);
+                            executedJobs.put(executionResponse.getExecutionId(), "STARTED");
 
                         }
                     }
@@ -165,7 +167,7 @@ public class tcli {
         System.exit(_EXITBAD);
     }
 
-    private static void updateCheckpointFile(int checkpoint)
+    private static void updateCheckpointFile(long checkpoint)
     {
         try {
             BufferedWriter cpwrt = new BufferedWriter(new FileWriter(new File(_CHECKPOINTFILE)));

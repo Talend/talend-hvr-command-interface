@@ -22,7 +22,6 @@ public class Cli {
         //options.addOption("j", "job", true, "The Talend Cloud Job to Execute");
         options.addOption("r","region", true, "Talend Cloud Region [AWS_USA_EAST | AWS_EMEA | AWS_APAC | AZURE_USA_WEST]");
         options.addOption("e","environment",true, "The environment the job is in. If not used name will be `default`");
-        options.addOption("cv","contextvariables", true, "Context Variables to pass. EX: name1=value1;name2=value2");
         options.addOption("hm","hvrmanifest", true, "Directory of HVR manifest file(s)");
         options.addOption("tm","tlndmanifest", true, "Path to Talend manifest");
         options.addOption("v","version", false,"product version");
@@ -97,9 +96,7 @@ public class Cli {
             if (cmd.hasOption("e")) {
                 logger.debug("Using cli argument -e");
             }
-            if (cmd.hasOption("cv")) {
-                logger.debug("Using cli argument -cv");
-            }
+
 
             if (!cmd.hasOption("tm") && !cmd.hasOption("hm"))
             {
