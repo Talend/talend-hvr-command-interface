@@ -2,8 +2,8 @@
 <launch4jConfig>
     <dontWrapJar>false</dontWrapJar>
     <headerType>console</headerType>
-    <jar>/Users/tbennett/Downloads/talend-hvr-command-interface/target/hvr-tcli-1.0.0-jar-with-dependencies.jar</jar>
-    <outfile>/Users/tbennett/Downloads/talend-hvr-command-interface/tcli.exe</outfile>
+    <jar>/Users/tbennett/VSCode/talend-hvr-command-interface/target/hvr-tcli-1.0.0-jar-with-dependencies.jar</jar>
+    <outfile>/Users/tbennett/VSCode/talend-hvr-command-interface/tcli.exe</outfile>
     <errTitle></errTitle>
     <cmdLine></cmdLine>
     <chdir>.</chdir>
@@ -19,12 +19,10 @@
         <cp>-Dlog4j.configuration=file:.\log4j.properties</cp>
     </classPath>
     <jre>
-        <path></path>
-        <bundledJre64Bit>false</bundledJre64Bit>
+        <path>%JAVA_HOME%</path>
+        <bundledJre64Bit>true</bundledJre64Bit>
         <bundledJreAsFallback>false</bundledJreAsFallback>
-        <minVersion>1.8.0</minVersion>
-        <maxVersion>1.8.2</maxVersion>
-        <jdkPreference>preferJre</jdkPreference>
+        <jdkPreference>jdkOnly</jdkPreference>
         <runtimeBits>64/32</runtimeBits>
     </jre>
 </launch4jConfig>
