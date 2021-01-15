@@ -2,3 +2,6 @@
 /target/
 talend-hvr-command-interface.iml
 /src/test/
+tcli.jar
+tcli.exe
+tcli
