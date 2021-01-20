@@ -19,6 +19,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Hashtable;
+import java.util.Properties;
 
 /**
  * Created by tbennett on 11/5/16.
@@ -33,6 +34,31 @@ public class tcli {
     private static ObjectMapper mapper;
 
     public static void main(String[] args) {
+        Properties prop = new Properties();
+        try(InputStream inputStream = new FileInputStream("./tcli_hvr.properties")) {
+            prop.load(inputStream);
+            System.out.println(prop.getProperty("proxy.protocol"));
+            System.exit(0);
+            if (prop.getProperty("proxy.protocol").equals("https")) {
+                System.setProperty("https.proxyHost", prop.getProperty("proxy.host"));
+                System.setProperty("https.proxyPort", prop.getProperty("proxy.port"));
+                if (prop.getProperty("proxy.user") != null && !prop.getProperty("proxy.user").trim().equals("")) {
+                    System.setProperty("https.proxyUser", prop.getProperty("proxy.user"));
+                    System.setProperty("https.proxyPassword", prop.getProperty("proxy.pwd"));
+                }
+
+            } else {
+                System.setProperty("http.proxyHost", prop.getProperty("proxy.host"));
+                System.setProperty("http.proxyPort", prop.getProperty("proxy.port"));
+                if (prop.getProperty("proxy.user") != null && !prop.getProperty("proxy.user").trim().equals("")) {
+                    System.setProperty("http.proxyUser", prop.getProperty("proxy.user"));
+                    System.setProperty("http.proxyPassword", prop.getProperty("proxy.pwd"));
+                }
+            }
+        } catch(IOException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
+        }
         mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         String workingDir = new File(".").getAbsolutePath();
@@ -41,7 +67,7 @@ public class tcli {
             BufferedReader cprdr = new BufferedReader(new FileReader(new File(workingDir+File.separator+_CHECKPOINTFILE)));
             last_checkpoint = Long.parseLong(cprdr.readLine().trim().split("\\.")[0]);
             cprdr.close();
-        } catch (IOException e)
+        } catch (IOException | NumberFormatException e)
         {
             logger.warn("Checkpoint file does not exist. Will create.");
         }
@@ -72,7 +98,13 @@ public class tcli {
             Hashtable<String, String> executedJobs = new Hashtable<>();
             ExecutionService executionService = ExecutionService.instance(credentials, TalendCloudRegion.valueOf(Cli.getCliValue("r")));
             for (File file : files) {
-                long hvrManifestCheckPoint = Long.parseLong(file.getName().split("\\.")[0]);
+                long hvrManifestCheckPoint = -1;
+                try {
+                    hvrManifestCheckPoint = Long.parseLong(file.getName().split("\\.")[0]);
+                } catch (NumberFormatException e) {
+                    logger.fatal("HVR file name not following timestamp format! ["+file.getName()+"]");
+                    System.exit(1);
+                }
                 while (hvrManifestCheckPoint > last_checkpoint) {
                     HVRManifest hvrManifest = mapper.readValue(file, HVRManifest.class);
                     for (String hvrTable : hvrManifest.getTables()) {
