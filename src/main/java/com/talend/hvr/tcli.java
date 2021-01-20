@@ -37,8 +37,6 @@ public class tcli {
         Properties prop = new Properties();
         try(InputStream inputStream = new FileInputStream("./tcli_hvr.properties")) {
             prop.load(inputStream);
-            System.out.println(prop.getProperty("proxy.protocol"));
-            System.exit(0);
             if (prop.getProperty("proxy.protocol").equals("https")) {
                 System.setProperty("https.proxyHost", prop.getProperty("proxy.host"));
                 System.setProperty("https.proxyPort", prop.getProperty("proxy.port"));
