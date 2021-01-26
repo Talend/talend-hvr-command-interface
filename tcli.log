@@ -1,0 +1,8 @@
+2021-01-26 15:53:14 DEBUG RestTemplate:79 - Created GET request for "https://api.us.cloud.talend.com/tmc/v2.2/executables/tasks?_s=name%3D%3DSimple%20-%20GetWeather%20Job;workspace.environment.name%3D%3Ddefault"
+2021-01-26 15:53:14 DEBUG RestTemplate:746 - Setting request Accept header to [text/plain, application/json, application/*+json, */*]
+2021-01-26 15:53:23 DEBUG RestTemplate:658 - GET request for "https://api.us.cloud.talend.com/tmc/v2.2/executables/tasks?_s=name%3D%3DSimple%20-%20GetWeather%20Job;workspace.environment.name%3D%3Ddefault" resulted in 200 (OK)
+2021-01-26 15:53:23 DEBUG RestTemplate:101 - Reading [java.lang.String] as "application/json" using [org.springframework.http.converter.StringHttpMessageConverter@10b9db7b]
+2021-01-26 15:57:00 DEBUG RestTemplate:79 - Created GET request for "https://api.us.cloud.talend.com/tmc/v2.2/executables/tasks?_s=name%3D%3DSimple%20-%20GetWeather%20Job;workspace.environment.name%3D%3Ddefault"
+2021-01-26 15:57:00 DEBUG RestTemplate:746 - Setting request Accept header to [text/plain, application/json, application/*+json, */*]
+2021-01-26 15:57:10 DEBUG RestTemplate:658 - GET request for "https://api.us.cloud.talend.com/tmc/v2.2/executables/tasks?_s=name%3D%3DSimple%20-%20GetWeather%20Job;workspace.environment.name%3D%3Ddefault" resulted in 200 (OK)
+2021-01-26 15:57:10 DEBUG RestTemplate:101 - Reading [java.lang.String] as "application/json" using [org.springframework.http.converter.StringHttpMessageConverter@10b9db7b]

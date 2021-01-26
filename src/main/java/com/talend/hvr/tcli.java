@@ -45,7 +45,7 @@ public class tcli {
                     System.setProperty("https.proxyPassword", prop.getProperty("proxy.pwd"));
                 }
 
-            } else {
+            } else if (prop.getProperty("proxy.protocol").equals("http")){
                 System.setProperty("http.proxyHost", prop.getProperty("proxy.host"));
                 System.setProperty("http.proxyPort", prop.getProperty("proxy.port"));
                 if (prop.getProperty("proxy.user") != null && !prop.getProperty("proxy.user").trim().equals("")) {
